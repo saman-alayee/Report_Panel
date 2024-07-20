@@ -1,10 +1,12 @@
 <template>
     <div>
-        home
+        <login/>
     </div>
 </template>
 
 <script setup>
+import login from '~/components/pageComponents/login.vue';
+
 
 </script>
 

@@ -1,8 +1,26 @@
 <template>
     <div>
-        <h1 class="font-bold text-3xl pt-4 pb-10">
+        <h1 class="font-bold text-3xl pt-4 pb-6">
             Clicks Mobile
         </h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 mt-2">
+            <div class="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                <Pie />
+            </div>
+            <div class="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                <Doughnut />
+            </div>
+            <div class="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                <Area />
+            </div>
+          
+            <div class="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                <Progressive />
+            </div>
+            <div class="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                <lineChart />
+            </div>
+        </div>
         <div class="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
             <TextInput v-model="searchQuery" iconSrc="/images/icons/search.svg" placeholder="Search for items..."
                 :dropdownItems="menuItems" dropdownButtonText="Filter" label="Search" />
@@ -77,6 +95,11 @@ import { computed, ref, onMounted } from 'vue';
 import axios from 'axios';
 import Dropdown from '../elements/dropdown/index.vue';
 import TextInput from '../elements/inputs/textInput.vue';
+import Pie from '../elements/chart/pie.vue';
+import Doughnut from '../elements/chart/doughnut.vue';
+import Area from '../elements/chart/area.vue';
+import Progressive from '../elements/chart/progressive.vue';
+import lineChart from '../elements/chart/lineChart.vue';
 
 const menuItems = ref([
     { text: 'Item 1' },
