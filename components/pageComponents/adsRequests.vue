@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1 class="font-bold text-3xl pt-4 pb-10">
-            Clicks
+            Ads Requests
         </h1>
         <div class="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
             <TextInput v-model="searchQuery" iconSrc="/images/icons/search.svg" placeholder="Search for items..."
@@ -16,14 +16,14 @@
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-6 py-3">no</th>
-                        <th scope="col" class="px-6 py-3">view_id</th>
+                        <th scope="col" class="px-6 py-3">web</th>
                         <th scope="col" class="px-6 py-3">publisher_id</th>
                         <th scope="col" class="px-6 py-3">campaign_id</th>
-                        <th scope="col" class="px-6 py-3">requests</th>
-                        <th scope="col" class="px-6 py-3">counted</th>
-                        <th scope="col" class="px-6 py-3">ip</th>
-                        <th scope="col" class="px-6 py-3">location</th>
-                        <th scope="col" class="px-6 py-3">Action</th>
+                        <th scope="col" class="px-6 py-3">created</th>
+                        <th scope="col" class="px-6 py-3">origin</th>
+                        <th scope="col" class="px-6 py-3">view_id</th>
+                        <th scope="col" class="px-6 py-3">action</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -32,14 +32,13 @@
 
                         <td class="px-6 py-4">{{ (currentPage - 1) * perPage + index + 1 }}</td>
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ product.name }}
+                            {{ product.web }}
                         </th>
-                        <td class="px-6 py-4">{{ product.color }}</td>
-                        <td class="px-6 py-4">{{ product.category }}</td>
-                        <td class="px-6 py-4">{{ product.requests }}</td>
-                        <td class="px-6 py-4">{{ product.counted }}</td>
-                        <td class="px-6 py-4">{{ product.ip }}</td>
-                        <td class="px-6 py-4">{{ product.location ? product.location : 'Loading...' }}</td>
+                        <td class="px-6 py-4">{{ product.publisher_id }}</td>
+                        <td class="px-6 py-4">{{ product.campaign_id }}</td>
+                        <td class="px-6 py-4">{{ product.created }}</td>
+                        <td class="px-6 py-4">{{ product.origin }}</td>
+                        <td class="px-6 py-4">{{ product.view_id }}</td>
                         <td class="px-6 py-4">
                             <a href="#" class="font-medium text-red-600 dark:text-red-500 hover:underline">Delete</a>
                         </td>
@@ -89,36 +88,15 @@ const searchQuery = ref('');
 const currentPage = ref(1);
 const perPage = ref(10); // Number of items per page
 
-const fetchLocation = async (ip) => {
-    try {
-        const response = await axios.get(`http://ip-api.com/json/${ip}`);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching location data:', error);
-        return null;
-    }
-};
 
-const loadLocations = async () => {
-    for (let product of products.value) {
-        const locationData = await fetchLocation(product.ip);
-        if (locationData) {
-            product.location = `${locationData.city}, ${locationData.country}`;
-        } else {
-            product.location = 'Location not found';
-        }
-    }
-};
 
 onMounted(() => {
     // Sample data; replace with actual data fetching logic
     products.value = [
         // Add multiple product objects here as needed
-        { name: 'sam MacBook Pro 17"', color: 'Silver', category: 'Laptop', ip: '192.8.55.8', location: null },
-        { name: 'Apple MacBook Pro 17"', color: 'Silver', category: 'Laptop', ip: '192.8.55.8', location: null }, { name: 'Apple MacBook Pro 17"', color: 'Silver', category: 'Laptop', ip: '192.8.55.8', location: null }, { name: 'Apple MacBook Pro 17"', color: 'Silver', category: 'Laptop', ip: '192.8.55.8', location: null }, { name: 'Apple MacBook Pro 17"', color: 'Silver', category: 'Laptop', ip: '192.8.55.8', location: null }, { name: 'Apple MacBook Pro 17"', color: 'Silver', category: 'Laptop', ip: '192.8.55.8', location: null }, { name: 'Apple MacBook Pro 17"', color: 'Silver', category: 'Laptop', ip: '192.8.55.8', location: null }, { name: 'Apple MacBook Pro 17"', color: 'Silver', category: 'Laptop', ip: '192.8.55.8', location: null }, { name: 'Apple MacBook Pro 17"', color: 'Silver', category: 'Laptop', ip: '192.8.55.8', location: null }, { name: 'Apple MacBook Pro 17"', color: 'Silver', category: 'Laptop', ip: '192.8.55.8', location: null }, { name: 'Apple MacBook Pro 17"', color: 'Silver', category: 'Laptop', ip: '192.8.55.8', location: null }, { name: 'Apple MacBook Pro 17"', color: 'Silver', category: 'Laptop', ip: '192.8.55.8', location: null }, { name: 'Apple MacBook Pro 17"', color: 'Silver', category: 'Laptop', ip: '192.8.55.8', location: null }, { name: 'Apple MacBook Pro 17"', color: 'Silver', category: 'Laptop', ip: '192.8.55.8', location: null }, { name: 'Apple MacBook Pro 17"', color: 'Silver', category: 'Laptop', ip: '192.8.55.8', location: null }, { name: 'Apple MacBook Pro 17"', color: 'Silver', category: 'Laptop', ip: '192.8.55.8', location: null }, { name: 'Apple MacBook Pro 17"', color: 'Silver', category: 'Laptop', ip: '192.8.55.8', location: null },
+        { web: 'True', publisher_id: '17039', campaign_id: '170369562', created: '192', origin: "https://hamgardi.com",view_id:"25454154" },
         // Add more products
     ];
-    loadLocations();
 });
 
 const filteredCards = computed(() => {

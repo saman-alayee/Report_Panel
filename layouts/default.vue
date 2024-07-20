@@ -40,6 +40,7 @@ const toggleSidebar = () => {
     height: 100vh;
     .content {
         height: 100%;
+        overflow:hidden ;
         margin-top: 24px;
         padding: 16px;
     }

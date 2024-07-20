@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1 class="font-bold text-3xl pt-4 pb-10">
-            Clicks
+            Clicks Mobile
         </h1>
         <div class="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
             <TextInput v-model="searchQuery" iconSrc="/images/icons/search.svg" placeholder="Search for items..."
