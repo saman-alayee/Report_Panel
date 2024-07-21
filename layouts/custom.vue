@@ -1,17 +1,11 @@
 <template>
-    <div>
-      <header>
-        <!-- Custom Header Content -->
-        <h1>Custom Header</h1>
-      </header>
+    <div class="layout">
+
       <main>
         <!-- This is where the page content will be injected -->
         <NuxtPage />
       </main>
-      <footer>
-        <!-- Custom Footer Content -->
-        <p>Custom Footer</p>
-      </footer>
+
     </div>
   </template>
   
@@ -20,19 +14,14 @@
   
   <style scoped>
   /* Add any styles here if necessary */
-  header {
-    background-color: #333;
-    color: #fff;
-    padding: 1rem;
-  }
+
   main {
     padding: 1rem;
   }
-  footer {
-    background-color: #333;
-    color: #fff;
-    padding: 1rem;
-    text-align: center;
+  .layout{
+    background-color: rgba(53, 53, 53, 0.1);
+    height: 100vh;
   }
+
   </style>
   
