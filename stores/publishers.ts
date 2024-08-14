@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
-export const useClicksStore = defineStore('clicks', {
+export const useClicksStore = defineStore('publishers', {
   state: () => ({
     data: [] as any[],
     isLoading: false,
@@ -16,7 +16,7 @@ export const useClicksStore = defineStore('clicks', {
       this.error = null;
       
       try {
-        const response = await axios.get(`http://localhost:5000/api/clicks`, {
+        const response = await axios.get(`http://localhost:5000/api/publishers`, {
           params: { page }
         });
         const result = response.data;
@@ -31,9 +31,9 @@ export const useClicksStore = defineStore('clicks', {
       }
     },
     resetData() {
-      this.data = [];
-      this.error = null;
-    },
+        this.data = [];
+        this.error = null;
+      },
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.fetchData(this.currentPage + 1);

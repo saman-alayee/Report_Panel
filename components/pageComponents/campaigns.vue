@@ -89,7 +89,7 @@
                     <tr v-else-if="store.error">
                         <td colspan="11" class="px-6 py-4 text-center text-red-500">{{ store.error }}</td>
                     </tr>
-                    <tr v-else v-for="(item, index) in filteredData" :key="item._id"
+                    <tr v-else v-for="(item, index) in filteredData_Campaign" :key="item._id"
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <td class="px-6 py-4">{{ (store.currentPage - 1) * store.perPage + index + 1 }}</td>
                         <td class="px-6 py-4">{{ item.name || 'N/A' }}</td>
@@ -155,7 +155,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useClicksStore } from '../../stores/campaign';
 import Spinner from '../elements/loading/index.vue';
 
@@ -170,7 +170,7 @@ const selectedWeb = ref<'all' | 'true' | 'false'>('all');
 const selectedInstall = ref<'all' | 'true' | 'false'>('all');
 
 // Computed properties
-const filteredData = computed(() => {
+const filteredData_Campaign = computed(() => {
     return store.data.filter(item => {
         const matchesActivate = selectedActivate.value === 'all' || item.activate === (selectedActivate.value === 'true');
         const matchesType = selectedType.value === 'all' || item.type === selectedType.value;
@@ -198,5 +198,9 @@ const previousPage = () => {
 // On component mount
 onMounted(() => {
     store.fetchData(store.currentPage);
+});
+onBeforeUnmount(() => {
+    store.resetData(); // Reset data when the component is destroyed
+    console.log("data cleared")
 });
 </script>

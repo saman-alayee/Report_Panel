@@ -1,6 +1,6 @@
 <template>
     <div>
-      <h1 class="font-bold text-3xl pt-4 pb-10">Clicks</h1>
+      <h1 class="font-bold text-3xl pt-4 pb-10">Clicks Mobile</h1>
   
       <!-- Filter Section -->
       <div class="p-4">
@@ -30,15 +30,11 @@
                 <Spinner />
               </td>
             </tr>
-            <tr v-if="store.len">
-              <td colspan="7" class="px-6 py-4 text-center text-red-500">
-                no data ...
-              </td>
-            </tr>
+            
             <tr v-else-if="store.error">
               <td colspan="7" class="px-6 py-4 text-center text-red-500">{{ store.error }}</td>
             </tr>
-            <tr v-else v-for="(item, index) in filteredData" :key="item._id"
+            <tr v-else v-for="(item, index) in filteredData_mobile" :key="item._id"
                 class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
               <td class="px-6 py-4">{{ (store.currentPage - 1) * store.perPage + index + 1 }}</td>
               <td class="px-6 py-4">{{ item.publisher_ID || 'N/A' }}</td>
@@ -77,7 +73,7 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, computed, onMounted } from 'vue';
+  import { ref, computed, onMounted,onBeforeUnmount } from 'vue';
   import { useClicksStore } from '../../stores/clicksMobile';
   import Spinner from '../elements/loading/index.vue';
   
@@ -88,7 +84,7 @@
   const selectedCounted = ref<'all' | 'true' | 'false'>('all');
   
   // Computed properties
-  const filteredData = computed(() => {
+  const filteredData_mobile = computed(() => {
     return store.data.filter(item => {
       if (selectedCounted.value === 'all') return true;
       return item.counted === (selectedCounted.value === 'true');
@@ -97,6 +93,7 @@
   
   // Methods
   const applyFilter = () => {
+    
     store.fetchData(1); // Fetch data from the first page after applying filter
   };
   
@@ -107,7 +104,9 @@
   const previousPage = () => {
     store.previousPage();
   };
-  
+  onBeforeUnmount(() => {
+  store.resetData(); // Reset data when the component is destroyed
+});
   // On component mount
   onMounted(() => {
     store.fetchData(store.currentPage);

@@ -1,11 +1,11 @@
 <template>
     <div>
-        <Mobile/>
+        <Publishers/>
     </div>
 </template>
 
 <script setup>
-import Mobile from '~/components/pageComponents/mobile.vue';
+import Publishers from '~/components/pageComponents/publishers.vue';
 
 
 </script>

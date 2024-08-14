@@ -46,7 +46,7 @@
         <div class="menu-title px-2" v-if="isOpen">Ads</div>
       </div>
 
-      <div class="menu-item" @click="goMobiles">
+      <div class="menu-item" @click="goCampaign">
         <div class="icon-container ">
           <svg xmlns="http://www.w3.org/2000/svg" width="1.15em" height="1.15em" viewBox="0 0 24 24">
             <path fill="currentColor"
@@ -55,7 +55,7 @@
         </div>
         <div class="menu-title px-2" v-if="isOpen">Campaigns</div>
       </div>
-      <div class="menu-item" @click="goMobiles">
+      <div class="menu-item" @click="goPublishers">
         <div class="icon-container ">
           <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 2048 2048">
             <path fill="currentColor"
@@ -64,7 +64,7 @@
         </div>
         <div class="menu-title px-2" v-if="isOpen">Publishers</div>
       </div>
-      <div class="menu-item" @click="goMobiles">
+      <div class="menu-item" @click="logOut">
         <div class="icon-container ">
           <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="M13.477 21.245H8.34a4.92 4.92 0 0 1-5.136-4.623V7.378A4.92 4.92 0 0 1 8.34 2.755h5.136"/><path stroke-miterlimit="10" d="M20.795 12H7.442"/><path stroke-linejoin="round" d="m16.083 17.136l4.404-4.404a1.04 1.04 0 0 0 0-1.464l-4.404-4.404"/></g></svg>
         </div>
@@ -96,17 +96,22 @@ function openMenu() {
 function goClicks() {
   router.push('/dashboard/clicks');
 }
-
 function goAds() {
   router.push('/dashboard/ads');
 }
 function goMobiles() {
   router.push('/dashboard/mobile');
 }
+function goCampaign() {
+  router.push('/dashboard/campaign');
+}
+function goPublishers() {
+  router.push('/dashboard/publishers');
+}
 
 function logOut() {
   localStorage.removeItem('adminToken');
-  router.push('/login_admin');
+  router.push('/');
 }
 </script>
 

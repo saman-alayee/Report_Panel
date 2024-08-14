@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
-export const useClicksStore = defineStore('clicks', {
+export const useClicksStore = defineStore('clicksMobile', {
   state: () => ({
     data: [] as any[],
     isLoading: false,
@@ -26,12 +26,16 @@ export const useClicksStore = defineStore('clicks', {
         this.totalPages = result.totalPages;
         this.currentPage = result.currentPage;
         this.perPage = result.perPage;
-      } catch (err) {
+      } catch (err:any) {
         this.error = err.message || 'Failed to load data';
       } finally {
         this.isLoading = false;
       }
     },
+    resetData() {
+        this.data = [];
+        this.error = null;
+      },
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.fetchData(this.currentPage + 1);

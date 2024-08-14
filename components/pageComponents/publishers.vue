@@ -1,16 +1,9 @@
 <template>
     <div>
-      <h1 class="font-bold text-3xl pt-4 pb-10">Clicks</h1>
+      <h1 class="font-bold text-3xl pt-4 pb-10">Publishers</h1>
   
       <!-- Filter Section -->
-      <div class="p-4">
-        <label for="countedFilter" class="mr-2">Filter by Counted:</label>
-        <select id="countedFilter" v-model="selectedCounted" @change="applyFilter">
-          <option value="all">All</option>
-          <option value="true">True</option>
-          <option value="false">False</option>
-        </select>
-      </div>
+   
       <Icon name="my-icon:foo" />
       <!-- Data Table -->
       <div class="overflow-x-auto shadow-md sm:rounded-lg">
@@ -35,7 +28,7 @@
             <tr v-else-if="store.error">
               <td colspan="7" class="px-6 py-4 text-center text-red-500">{{ store.error }}</td>
             </tr>
-            <tr v-else v-for="(item, index) in filteredData_click" :key="item._id"
+            <tr v-else v-for="(item, index) in filteredData" :key="item._id"
                 class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
               <td class="px-6 py-4">{{ (store.currentPage - 1) * store.perPage + index + 1 }}</td>
               <td class="px-6 py-4">{{ item.view_ID || 'N/A' }}</td>
@@ -75,8 +68,8 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, computed, onMounted,onBeforeUnmount } from 'vue';
-  import { useClicksStore } from '../../stores/clicks';
+  import { ref, computed, onMounted } from 'vue';
+  import { useClicksStore } from '../../stores/publishers';
   import Spinner from '../elements/loading/index.vue';
   
   // Pinia store
@@ -86,7 +79,7 @@
   const selectedCounted = ref<'all' | 'true' | 'false'>('all');
   
   // Computed properties
-  const filteredData_click = computed(() => {
+  const filteredData = computed(() => {
     return store.data.filter(item => {
       if (selectedCounted.value === 'all') return true;
       return item.counted === (selectedCounted.value === 'true');
@@ -95,7 +88,6 @@
   
   // Methods
   const applyFilter = () => {
-    
     store.fetchData(1); // Fetch data from the first page after applying filter
   };
   
@@ -106,9 +98,7 @@
   const previousPage = () => {
     store.previousPage();
   };
-  onBeforeUnmount(() => {
-  store.resetData(); // Reset data when the component is destroyed
-});
+  
   // On component mount
   onMounted(() => {
     store.fetchData(store.currentPage);
