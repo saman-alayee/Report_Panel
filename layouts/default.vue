@@ -4,8 +4,8 @@
             <Sidebar />
         </div>
         <div class="main-layout-component">
-            <div class="container">
                 <Topbar/>
+            <div class="container-fluid">
                 <div class="content">
                     <slot />
                 </div>
