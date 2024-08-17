@@ -6,7 +6,9 @@
 
 <script setup>
 import Publishers from '~/components/pageComponents/publishers.vue';
-
+definePageMeta({
+  middleware: 'auth'
+});
 
 </script>
 

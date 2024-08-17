@@ -3,13 +3,15 @@
       <h1 class="font-bold text-3xl pt-4 pb-10">Clicks Mobile</h1>
   
       <!-- Filter Section -->
-      <div class="p-4">
-        <label for="countedFilter" class="mr-2">Filter by Counted:</label>
-        <select id="countedFilter" v-model="selectedCounted" @change="applyFilter">
+      <div class="p-4 space-y-4 flex justify-start">
+            <div class="flex items-center space-x-2 w-42">
+        <label for="countedFilter" class="mr-2">Counted:</label>
+        <select class="block w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" id="countedFilter" v-model="selectedCounted" @change="applyFilter">
           <option value="all">All</option>
           <option value="true">True</option>
           <option value="false">False</option>
         </select>
+      </div>
       </div>
       <!-- Data Table -->
       <div class="overflow-x-auto shadow-md sm:rounded-lg">

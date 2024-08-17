@@ -16,8 +16,15 @@ export const useClicksStore = defineStore('adsRequests', {
       this.error = null;
       
       try {
+        const token = useCookie('token').value; // Adjust based on your cookie handling
+        console.log(token)
         const response = await axios.get(`http://localhost:5000/api/adsRequests`, {
-          params: { page }
+          params: { page },
+          headers: {
+            'Authorization': `${token}`, // Add Authorization header if needed
+            'Content-Type': 'application/json',
+          },
+          
         });
         const result = response.data;
         this.data = Array.isArray(result.data) ? result.data : [];

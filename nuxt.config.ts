@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/tailwindcss', "@nuxt/icon"],
   css: ['~/assets/css/main.css'],
   plugins: [
-    '~/plugins/pinia'
+    '~/plugins/pinia','~/plugins/vue3-toastify'
   ],
 
 })

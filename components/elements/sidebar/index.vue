@@ -85,9 +85,11 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAdminStore } from '~/stores/login'; // Import the Pinia store
 
 const isOpen = ref(false);
 const router = useRouter();
+const adminStore = useAdminStore();
 
 function openMenu() {
   isOpen.value = !isOpen.value;
@@ -108,11 +110,9 @@ function goCampaign() {
 function goPublishers() {
   router.push('/dashboard/publishers');
 }
-
-function logOut() {
-  localStorage.removeItem('adminToken');
-  router.push('/');
-}
+ function logOut() {
+     adminStore.logout(router)
+  }
 </script>
 
 

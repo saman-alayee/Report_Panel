@@ -6,7 +6,9 @@
 
 <script setup>
 import Ads from '~/components/pageComponents/adsRequests.vue';
-
+definePageMeta({
+  middleware: 'auth'
+});
 
 </script>
 
