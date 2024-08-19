@@ -118,7 +118,7 @@ function goPublishers() {
 
 <style lang="scss" scoped>
 .sidebar-component-container {
-  width: 72px;
+  width: 68px;
   height: 100%;
   background-color: #020617;
   transition: all 0.3s;

@@ -9,6 +9,9 @@ export const useClicksStore = defineStore('adsRequests', {
     currentPage: 1,
     totalPages: 1,
     perPage: 10,
+    selectedPublisherId: null as string | null,
+    selectedCampaignId: null as string | null,
+    selectedWeb: 'all' as 'all' | 'true' | 'false',
   }),
   actions: {
     async fetchData(page: number) {
@@ -16,15 +19,18 @@ export const useClicksStore = defineStore('adsRequests', {
       this.error = null;
       
       try {
-        const token = useCookie('token').value; // Adjust based on your cookie handling
-        console.log(token)
+        const token = useCookie('token').value;
         const response = await axios.get(`http://localhost:5000/api/adsRequests`, {
-          params: { page },
+          params: { 
+            page,
+            publisherId: this.selectedPublisherId,
+            campaignId: this.selectedCampaignId,
+            web: this.selectedWeb
+          },
           headers: {
-            'Authorization': `${token}`, // Add Authorization header if needed
+            'Authorization': `${token}`,
             'Content-Type': 'application/json',
           },
-          
         });
         const result = response.data;
         this.data = Array.isArray(result.data) ? result.data : [];
@@ -38,9 +44,9 @@ export const useClicksStore = defineStore('adsRequests', {
       }
     },
     resetData() {
-        this.data = [];
-        this.error = null;
-      },
+      this.data = [];
+      this.error = null;
+    },
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.fetchData(this.currentPage + 1);
