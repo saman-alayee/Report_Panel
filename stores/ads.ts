@@ -41,7 +41,9 @@ export const useClicksStore = defineStore('adsRequests', {
         if (end && end.trim() !== '') {
           params.end = end;
         }
-                
+        
+        console.log('Fetching ads requests with params:', params);
+        
         const response = await axios.get(`https://api.daartads.com/tracker/api/v1/ads-requests`, {
           params: params,
           headers: {
@@ -49,7 +51,9 @@ export const useClicksStore = defineStore('adsRequests', {
             'Content-Type': 'application/json',
           },
         });
-                
+        
+        console.log('API Response:', response.data);
+        
         const result = response.data;
         
         // Handle the actual API response structure
@@ -66,6 +70,10 @@ export const useClicksStore = defineStore('adsRequests', {
         this.perPage = result.limit || result.perPage || 20;
         this.totalCount = result.total || result.totalCount || this.data.length;
         this.totalPages = Math.ceil(this.totalCount / this.perPage);
+        
+        console.log('Ads requests loaded:', this.data.length, 'items');
+        console.log('Total count:', this.totalCount);
+        console.log('Total pages:', this.totalPages);
         
       } catch (err: any) {
         console.error('API Error:', err);

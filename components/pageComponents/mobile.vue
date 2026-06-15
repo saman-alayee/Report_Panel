@@ -57,7 +57,7 @@
             </svg>
             <input 
               type="date" 
-              v-model="startDate"
+              v-model="start"
               @change="applyDateFilter"
               class="w-full pl-10 pr-4 py-2.5 rounded-xl border transition-all focus:ring-2 focus:outline-none"
               :class="[
@@ -83,7 +83,7 @@
             </svg>
             <input 
               type="date" 
-              v-model="endDate"
+              v-model="end"
               @change="applyDateFilter"
               class="w-full pl-10 pr-4 py-2.5 rounded-xl border transition-all focus:ring-2 focus:outline-none"
               :class="[
@@ -99,13 +99,13 @@
       <!-- Active Filters Display -->
       <div v-if="hasActiveFilters" class="flex flex-wrap gap-2 mt-4 pt-4 border-t" :class="isDarkMode ? 'border-slate-700' : 'border-gray-200'">
         <span class="text-xs" :class="isDarkMode ? 'text-slate-400' : 'text-gray-500'">Active filters:</span>
-        <span v-if="startDate" class="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full" :class="isDarkMode ? 'bg-slate-700 text-slate-300' : 'bg-gray-100 text-gray-600'">
-          From: {{ formatDateShort(startDate) }}
-          <button @click="clearStartDate" class="hover:text-red-500">&times;</button>
+        <span v-if="start" class="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full" :class="isDarkMode ? 'bg-slate-700 text-slate-300' : 'bg-gray-100 text-gray-600'">
+          From: {{ formatDateShort(start) }}
+          <button @click="clearStart" class="hover:text-red-500">&times;</button>
         </span>
-        <span v-if="endDate" class="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full" :class="isDarkMode ? 'bg-slate-700 text-slate-300' : 'bg-gray-100 text-gray-600'">
-          To: {{ formatDateShort(endDate) }}
-          <button @click="clearEndDate" class="hover:text-red-500">&times;</button>
+        <span v-if="end" class="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full" :class="isDarkMode ? 'bg-slate-700 text-slate-300' : 'bg-gray-100 text-gray-600'">
+          To: {{ formatDateShort(end) }}
+          <button @click="clearEnd" class="hover:text-red-500">&times;</button>
         </span>
       </div>
     </div>
@@ -299,13 +299,13 @@ const store = useClicksMobileStore();
 const isDarkMode = ref(true);
 
 // Date filter states
-const startDate = ref<string | null>(null);
-const endDate = ref<string | null>(null);
+const start = ref<string | null>(null);
+const end = ref<string | null>(null);
 const inputPage = ref<number | null>(null);
 
 // Computed
 const hasActiveFilters = computed(() => {
-  return startDate.value !== null || endDate.value !== null;
+  return start.value !== null || end.value !== null;
 });
 
 const conversionRate = computed(() => {
@@ -316,22 +316,22 @@ const conversionRate = computed(() => {
 
 // Methods
 const applyDateFilter = () => {
-  store.setDateRange(startDate.value, endDate.value);
+  store.setDateRange(start.value, end.value);
 };
 
-const clearStartDate = () => {
-  startDate.value = null;
+const clearStart = () => {
+  start.value = null;
   applyDateFilter();
 };
 
-const clearEndDate = () => {
-  endDate.value = null;
+const clearEnd = () => {
+  end.value = null;
   applyDateFilter();
 };
 
 const clearDateFilter = () => {
-  startDate.value = null;
-  endDate.value = null;
+  start.value = null;
+  end.value = null;
   store.clearDateFilter();
 };
 

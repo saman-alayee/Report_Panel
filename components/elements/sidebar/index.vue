@@ -349,4 +349,47 @@ onMounted(() => {
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-lg: 0 25px 50px -12px rgb(0 0 0 / 0.15);
 }
+
+.sidebar-footer-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 200ms ease-in-out;
+  font-weight: 500;
+
+  &:hover {
+    background-color: #fee2e2;
+    color: #991b1b;
+
+    @media (prefers-color-scheme: dark) {
+      background-color: #7f1d1d;
+      color: #fca5a5;
+    }
+  }
+}
+
+/* Scrollbar styling */
+.sidebar-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-400);
+  border-radius: 3px;
+
+  &:hover {
+    background: var(--color-neutral-500);
+  }
+}
 </style>

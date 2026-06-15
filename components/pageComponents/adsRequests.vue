@@ -79,7 +79,7 @@
             </svg>
             <input 
               type="date" 
-              v-model="endD"
+              v-model="end"
               @change="applyDateFilter"
               class="w-full pl-10 pr-4 py-2.5 rounded-xl border transition-all focus:ring-2 focus:outline-none"
               :class="[
@@ -99,9 +99,9 @@
           From: {{ formatDateShort(start) }}
           <button @click="clearStart" class="hover:text-red-500">&times;</button>
         </span>
-        <span v-if="endD" class="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full" :class="isDarkMode ? 'bg-slate-700 text-slate-300' : 'bg-gray-100 text-gray-600'">
-          To: {{ formatDateShort(endD) }}
-          <button @click="clearEndD" class="hover:text-red-500">&times;</button>
+        <span v-if="end" class="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full" :class="isDarkMode ? 'bg-slate-700 text-slate-300' : 'bg-gray-100 text-gray-600'">
+          To: {{ formatDateShort(end) }}
+          <button @click="clearEnd" class="hover:text-red-500">&times;</button>
         </span>
       </div>
     </div>
@@ -286,17 +286,17 @@ const isDarkMode = ref(true);
 
 // Date filter states
 const start = ref<string | null>(null);
-const endD = ref<string | null>(null);
+const end = ref<string | null>(null);
 const inputPage = ref<number | null>(null);
 
 // Computed
 const hasActiveFilters = computed(() => {
-  return start.value !== null || endD.value !== null;
+  return start.value !== null || end.value !== null;
 });
 
 // Methods
 const applyDateFilter = () => {
-  store.setDateRange(start.value, endD.value);
+  store.setDateRange(start.value, end.value);
 };
 
 const clearStart = () => {
@@ -304,14 +304,14 @@ const clearStart = () => {
   applyDateFilter();
 };
 
-const clearEndD = () => {
-  endD.value = null;
+const clearEnd = () => {
+  end.value = null;
   applyDateFilter();
 };
 
 const clearDateFilter = () => {
   start.value = null;
-  endD.value = null;
+  end.value = null;
   store.clearDateFilter();
 };
 

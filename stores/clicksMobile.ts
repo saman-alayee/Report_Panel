@@ -4,22 +4,22 @@ import axios from 'axios';
 
 export const useClicksMobileStore = defineStore('clicksMobile', {
   state: () => ({
-    data: [] as any[],
+    data: [] ,
     isLoading: false,
     error: null as string | null,
     currentPage: 1,
     totalPages: 1,
     totalCount: 0,
     perPage: 20,
-    startDate: null as string | null,
-    endDate: null as string | null,
+    start: null as string | null,
+    end: null as string | null,
   }),
   
   actions: {
     async fetchData(
       page: number = this.currentPage,
-      startDate: string | null = this.startDate,
-      endDate: string | null = this.endDate
+      start: string | null = this.start,
+      end: string | null = this.end
     ) {
       this.isLoading = true;
       this.error = null;
@@ -34,16 +34,14 @@ export const useClicksMobileStore = defineStore('clicksMobile', {
         };
         
         // Only add date parameters if they have valid values
-        if (startDate && startDate.trim() !== '') {
-          params.startDate = startDate;
+        if (start && start.trim() !== '') {
+          params.start = start;
         }
         
-        if (endDate && endDate.trim() !== '') {
-          params.endDate = endDate;
+        if (end && end.trim() !== '') {
+          params.end = end;
         }
-        
-        console.log('Fetching mobile clicks with params:', params);
-        
+                
         const response = await axios.get(`https://api.daartads.com/tracker/api/v1/clicks-mobile`, {
           params: params,
           headers: {
@@ -71,15 +69,10 @@ export const useClicksMobileStore = defineStore('clicksMobile', {
         this.totalCount = result.total || result.totalCount || this.data.length;
         this.totalPages = Math.ceil(this.totalCount / this.perPage);
         
-        console.log('Mobile clicks loaded:', this.data.length, 'items');
-        console.log('Total count:', this.totalCount);
-        console.log('Total pages:', this.totalPages);
-        
       } catch (err: any) {
-        console.error('API Error:', err);
         this.error = err.message || 'Failed to load data';
       } finally {
-        this.isLoading = false;
+        this.isLoading = false
       }
     },
     
@@ -104,16 +97,16 @@ export const useClicksMobileStore = defineStore('clicksMobile', {
       }
     },
     
-    setDateRange(startDate: string | null, endDate: string | null) {
-      this.startDate = startDate;
-      this.endDate = endDate;
+    setDateRange(start: string | null, end: string | null) {
+      this.start = start;
+      this.end = end;
       this.currentPage = 1;
       this.fetchData(1);
     },
     
     clearDateFilter() {
-      this.startDate = null;
-      this.endDate = null;
+      this.start = null;
+      this.end = null;
       this.currentPage = 1;
       this.fetchData(1);
     }

@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export const useClicksStore = defineStore('clicks', {
   state: () => ({
-    data: [] as any[],
+    data: [] as Click[],
     isLoading: false,
     error: null as string | null,
     currentPage: 1,
@@ -75,7 +75,7 @@ export const useClicksStore = defineStore('clicks', {
         console.error('API Error:', err);
         this.error = err.message || 'Failed to load data';
       } finally {
-        this.isLoading = false;
+        this.isLoading = false
       }
     },
     

@@ -46,6 +46,11 @@
             </div>
           </transition>
         </div>
+
+        <!-- Logout Button -->
+        <button class="topbar-btn logout-btn" @click="handleLogout" title="Logout">
+          <Icon name="mdi:logout" />
+        </button>
       </div>
     </div>
   </header>

@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export const useCampaignStore = defineStore('campaigns', {
   state: () => ({
-    data: [] as any[],
+    data: [] as Campaign[],
     isLoading: false,
     error: null as string | null,
     currentPage: 1,
@@ -22,37 +22,20 @@ export const useCampaignStore = defineStore('campaigns', {
   }),
   
   actions: {
-    async fetchData(
-      page: number = this.currentPage,
-      activate: 'all' | 'true' | 'false' = this.selectedActivate,
-      type: string | 'all' = this.selectedType,
-      mobile: 'all' | 'true' | 'false' = this.selectedMobile,
-      web: 'all' | 'true' | 'false' = this.selectedWeb,
-      install: 'all' | 'true' | 'false' = this.selectedInstall,
-      clicks: string = this.selectedClicks,
-      campaignId: string | null = this.campaignId,
-      name: string | null = this.name
-    ) {
-      this.isLoading = true;
-      this.error = null;
+    /**
+     * Fetch campaigns data from API
+     */
+    async fetchData(page: number = this.currentPage) {
+      this.isLoading = true
+      this.error = null
 
       try {
         const token = useCookie('token').value;
         
-        // Build params object (only include non-null values)
-        const params: any = { page };
-        if (activate !== 'all') params.activate = activate === 'true';
-        if (type !== 'all') params.type = type;
-        if (mobile !== 'all') params.mobile = mobile === 'true';
-        if (web !== 'all') params.web = web === 'true';
-        if (install !== 'all') params.install = install === 'true';
-        if (campaignId) params.campaignId = campaignId;
-        if (name) params.name = name;
+
         
-        console.log('Fetching campaigns with params:', params);
         
         const response = await axios.get(`https://api.daartads.com/tracker/api/v1/campaigns`, {
-          params,
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -87,7 +70,7 @@ export const useCampaignStore = defineStore('campaigns', {
         console.error('API Error:', err);
         this.error = err.message || 'Failed to load data';
       } finally {
-        this.isLoading = false;
+        this.isLoading = false
       }
     },
     

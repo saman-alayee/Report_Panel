@@ -39,27 +39,37 @@ export const useAdminStore = defineStore('admin', {
         // Redirect to dashboard if login is successful
         router.push('/dashboard/clicks');
 
+        return true
       } catch (err: any) {
         this.error = err.response?.data?.message || err.response?.data || 'Login failed. Please check your credentials.';
       } finally {
-        this.isLoading = false;
+        this.isLoading = false
       }
     },
 
-    logout(router: ReturnType<typeof useRouter>) {
-      // Clear all cookies
-      Cookies.remove('token');
-      Cookies.remove('role');
-      Cookies.remove('fullname');
-      Cookies.remove('id');
-      Cookies.remove('email');
+    /**
+     * Logout user
+     */
+    async logout(router: ReturnType<typeof useRouter>) {
+      // Clear cookies
+      const tokenCookie = useCookie('token')
+      const roleCookie = useCookie('role')
+      const fullnameCookie = useCookie('fullname')
+      const idCookie = useCookie('id')
+      const emailCookie = useCookie('email')
 
       this.token = null;
       this.user = null;
       this.fullName = null;
       this.error = null;
 
-      router.push('/');
+      // Clear store state
+      this.token = null
+      this.user = null
+      this.error = null
+
+      // Redirect to login
+      await router.push('/')
     },
     
     clearError() {
