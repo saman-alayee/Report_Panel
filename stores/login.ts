@@ -8,7 +8,7 @@ export const useAdminStore = defineStore('admin', {
   state: () => ({
     token: null as string | null,
     user: null as any | null,
-    fullName: null as any | null,
+    name: null as any | null,
     isLoading: false,
     error: null as string | null,
   }),
@@ -29,12 +29,11 @@ export const useAdminStore = defineStore('admin', {
 
         // Set cookies with proper options
         Cookies.set('token', response.data.token, { expires: 7, secure: true, sameSite: 'strict' });
-        Cookies.set('fullname', response.data.fullname, { expires: 7, secure: true, sameSite: 'strict' });
-        Cookies.set('id', response.data.id, { expires: 7, secure: true, sameSite: 'strict' });
+        Cookies.set('name', response.data.name, { expires: 7, secure: true, sameSite: 'strict' });
 
         this.token = token;
         this.user = userData;
-        this.fullName = response.data.fullname;
+        this.name = response.data.name;
 
         // Redirect to dashboard if login is successful
         router.push('/dashboard/clicks');
@@ -53,14 +52,12 @@ export const useAdminStore = defineStore('admin', {
     async logout(router: ReturnType<typeof useRouter>) {
       // Clear cookies
       const tokenCookie = useCookie('token')
-      const roleCookie = useCookie('role')
-      const fullnameCookie = useCookie('fullname')
-      const idCookie = useCookie('id')
-      const emailCookie = useCookie('email')
+      const nameCookie = useCookie('name')
+
 
       this.token = null;
       this.user = null;
-      this.fullName = null;
+      this.name = null;
       this.error = null;
 
       // Clear store state

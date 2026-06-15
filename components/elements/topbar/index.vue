@@ -16,7 +16,7 @@
             <span>{{ userInitials }}</span>
           </div>
           <div class="user-info" v-if="!isMobile">
-            <div class="user-name">{{ fullName }}</div>
+            <div class="user-name">{{ name }}</div>
             <div class="user-role">Admin</div>
           </div>
           <svg class="dropdown-arrow" :class="{ rotated: isDropdownOpen }" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -47,10 +47,7 @@
           </transition>
         </div>
 
-        <!-- Logout Button -->
-        <button class="topbar-btn logout-btn" @click="handleLogout" title="Logout">
-          <Icon name="mdi:logout" />
-        </button>
+  
       </div>
     </div>
   </header>
@@ -70,10 +67,10 @@ const isDropdownOpen = ref(false);
 const isDarkMode = ref(true);
 const isMobile = ref(false);
 
-const fullName = ref(Cookies.get('fullname') || 'Admin User');
+const name = ref(Cookies.get('name') || 'Admin User');
 
 const userInitials = computed(() => {
-  return fullName.value.split(' ').map(n => n[0]).join('').toUpperCase();
+  return name.value.split(' ').map(n => n[0]).join('').toUpperCase();
 });
 
 const pageTitle = computed(() => {
