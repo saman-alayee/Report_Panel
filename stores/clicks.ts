@@ -1,3 +1,4 @@
+// stores/clicks.js - Updated for date filters only
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
@@ -8,73 +9,108 @@ export const useClicksStore = defineStore('clicks', {
     error: null as string | null,
     currentPage: 1,
     totalPages: 1,
-    perPage: 10,
+    totalCount: 0,
+    perPage: 20,
     selectedCampaignId: null as string | null,
     selectedPublisherId: null as string | null,
     selectedCounted: 'all' as 'all' | 'true' | 'false',
-    startDate: null as string | null,
-    endDate: null as string | null,
+    start: null as string | null,
+    end: null as string | null,
   }),
+  
   actions: {
     async fetchData(
-      page: number,
-      counted: 'all' | 'true' | 'false' = this.selectedCounted,
-      campaignId: string | null  = this.selectedCampaignId,
-      publisherId: string | null = this.selectedPublisherId,
-      startDate: string | null = this.startDate,
-      endDate: string | null = this.endDate
+      page: number = this.currentPage,
+      start: string | null = this.start,
+      end: string | null = this.end
     ) {
       this.isLoading = true;
       this.error = null;
 
       try {
         const token = useCookie('token').value;
-        const response = await axios.get(`http://localhost:5000/api/clicks`, {
-          params: { 
-            page,
-            counted,
-            campaignId,
-            publisherId,
-            startDate,
-            endDate
-          },
+        
+        // Build params object - only include valid parameters
+        const params: any = {
+          page: page,
+          limit: this.perPage
+        };
+        
+        // Only add date parameters if they have valid values
+        if (start && start.trim() !== '') {
+          params.start = start;
+        }
+        
+        if (end && end.trim() !== '') {
+          params.end = end;
+        }
+        
+        
+        const response = await axios.get(`https://api.daartads.com/tracker/api/v1/clicks`, {
+          params: params,
           headers: {
-            'Authorization': `${token}`,
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
         });
         const result = response.data;
-        this.data = Array.isArray(result.data) ? result.data : [];
-        this.totalPages = result.totalPages;
-        this.currentPage = result.currentPage;
-        this.perPage = result.perPage;
+        
+        // Handle the actual API response structure
+        if (result.data && Array.isArray(result.data)) {
+          this.data = result.data;
+        } else if (Array.isArray(result)) {
+          this.data = result;
+        } else {
+          this.data = [];
+        }
+        
+        // Set pagination values
+        this.currentPage = result.page || result.currentPage || page;
+        this.perPage = result.limit || result.perPage || 20;
+        this.totalCount = result.total || result.totalCount || this.data.length;
+        this.totalPages = Math.ceil(this.totalCount / this.perPage);
+
+        
       } catch (err: any) {
+        console.error('API Error:', err);
         this.error = err.message || 'Failed to load data';
       } finally {
         this.isLoading = false;
       }
     },
-    setFilters({ campaignId, publisherId, counted, startDate, endDate }: any) {
-      this.selectedCampaignId = campaignId;
-      this.selectedPublisherId = publisherId;
-      this.selectedCounted = counted;
-      this.startDate = startDate;
-      this.endDate = endDate;
+    
+    setFilters({ start, end }: any) {
+      if (start !== undefined) this.start = start;
+      if (end !== undefined) this.end = end;
       this.currentPage = 1;
     },
+    
     resetData() {
       this.data = [];
       this.error = null;
+      this.currentPage = 1;
+      this.totalPages = 1;
+      this.totalCount = 0;
+      this.perPage = 20;
     },
+    
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.fetchData(this.currentPage + 1);
       }
     },
+    
     previousPage() {
       if (this.currentPage > 1) {
         this.fetchData(this.currentPage - 1);
       }
+    },
+    
+    clearDateFilter() {
+      this.start = null;
+      this.end = null;
+      this.currentPage = 1;
+      this.fetchData(1);
     }
   }
 });

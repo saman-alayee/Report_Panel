@@ -13,6 +13,7 @@
     "@headlessui/vue": "^1.7.22",
     "@heroicons/vue": "^2.1.5",
     "@nuxt/icon": "^1.4.5",
+    "@vueuse/core": "^14.3.0",
     "axios": "^1.7.2",
     "chart.js": "^4.4.3",
     "js-cookie": "^3.0.5",

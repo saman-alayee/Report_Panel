@@ -17,10 +17,10 @@ export const useClicksStore = defineStore('publishers', {
       
       try {
         const token = useCookie('token').value; // Adjust based on your cookie handling
-        const response = await axios.get(`http://localhost:5000/api/publishers`, {
+        const response = await axios.get(`https://api.daartads.com/tracker/api/v1/users`, {
           params: { page },
           headers: {
-            'Authorization': `${token}`, // Add Authorization header if needed
+            'Authorization': `Bearer ${token}`, // Add Authorization header if needed
             'Content-Type': 'application/json',
           },
         });

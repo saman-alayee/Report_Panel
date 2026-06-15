@@ -6,9 +6,9 @@
 
 <script setup>
 import Campaign from '~/components/pageComponents/campaigns.vue';
-definePageMeta({
-  middleware: 'auth'
-});
+// definePageMeta({
+//   middleware: 'auth'
+// });
 
 </script>
 

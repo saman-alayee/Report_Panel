@@ -1,13 +1,90 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+/* assets/global.scss */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-
-html {
-    overflow: hidden;
+* {
+  font-family: 'Inter', sans-serif;
 }
-html,body {
-  font-family: "Source Sans 3", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 600;
-  font-style: normal;
-  font-size: large;
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--border-color) 25%,
+    var(--bg-hover) 50%,
+    var(--border-color) 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+
+:root.dark {
+  --topbar-bg: rgba(15, 23, 42, 0.95);
+  --input-bg: rgba(30, 41, 59, 0.5);
+  --bg-hover: rgba(51, 65, 85, 0.6);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border-color: rgba(51, 65, 85, 0.5);
+  --accent-primary: #8b5cf6;
+  --accent-secondary: #3b82f6;
+  --accent-glow: rgba(139, 92, 246, 0.3);
+  --dropdown-bg: #1e293b;
+  --shadow-lg: 0 25px 50px -12px rgb(0 0 0 / 0.5);
+}
+
+:root.light {
+  --topbar-bg: rgba(255, 255, 255, 0.95);
+  --input-bg: #f8fafc;
+  --bg-hover: rgba(241, 245, 249, 0.8);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --border-color: rgba(203, 213, 225, 0.5);
+  --accent-primary: #8b5cf6;
+  --accent-secondary: #3b82f6;
+  --accent-glow: rgba(139, 92, 246, 0.2);
+  --dropdown-bg: #ffffff;
+  --shadow-lg: 0 25px 50px -12px rgb(0 0 0 / 0.15);
 }

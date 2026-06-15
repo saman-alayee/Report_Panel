@@ -1,3 +1,4 @@
+// stores/ads.js
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
@@ -8,54 +9,105 @@ export const useClicksStore = defineStore('adsRequests', {
     error: null as string | null,
     currentPage: 1,
     totalPages: 1,
-    perPage: 10,
-    selectedPublisherId: null as string | null,
-    selectedCampaignId: null as string | null,
-    selectedWeb: 'all' as 'all' | 'true' | 'false',
+    totalCount: 0,
+    perPage: 20,
+    start: null as string | null,
+    end: null as string | null,
   }),
+  
   actions: {
-    async fetchData(page: number) {
+    async fetchData(
+      page: number = this.currentPage,
+      start: string | null = this.start,
+      end: string | null = this.end
+    ) {
       this.isLoading = true;
       this.error = null;
       
       try {
         const token = useCookie('token').value;
-        const response = await axios.get(`http://localhost:5000/api/adsRequests`, {
-          params: { 
-            page,
-            publisherId: this.selectedPublisherId,
-            campaignId: this.selectedCampaignId,
-            web: this.selectedWeb
-          },
+        
+        // Build params object - only include valid parameters
+        const params: any = {
+          page: page,
+          limit: this.perPage
+        };
+        
+        // Only add date parameters if they have valid values
+        if (start && start.trim() !== '') {
+          params.start = start;
+        }
+        
+        if (end && end.trim() !== '') {
+          params.end = end;
+        }
+                
+        const response = await axios.get(`https://api.daartads.com/tracker/api/v1/ads-requests`, {
+          params: params,
           headers: {
-            'Authorization': `${token}`,
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
         });
+                
         const result = response.data;
-        this.data = Array.isArray(result.data) ? result.data : [];
-        this.totalPages = result.totalPages;
-        this.currentPage = result.currentPage;
-        this.perPage = result.perPage;
-      } catch (err:any) {
+        
+        // Handle the actual API response structure
+        if (result.data && Array.isArray(result.data)) {
+          this.data = result.data;
+        } else if (Array.isArray(result)) {
+          this.data = result;
+        } else {
+          this.data = [];
+        }
+        
+        // Set pagination values
+        this.currentPage = result.page || result.currentPage || page;
+        this.perPage = result.limit || result.perPage || 20;
+        this.totalCount = result.total || result.totalCount || this.data.length;
+        this.totalPages = Math.ceil(this.totalCount / this.perPage);
+        
+      } catch (err: any) {
+        console.error('API Error:', err);
         this.error = err.message || 'Failed to load data';
       } finally {
         this.isLoading = false;
       }
     },
+    
     resetData() {
       this.data = [];
       this.error = null;
+      this.currentPage = 1;
+      this.totalPages = 1;
+      this.totalCount = 0;
+      this.perPage = 20;
     },
+    
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.fetchData(this.currentPage + 1);
       }
     },
+    
     previousPage() {
       if (this.currentPage > 1) {
         this.fetchData(this.currentPage - 1);
       }
+    },
+    
+    setDateRange(start: string | null, end: string | null) {
+      this.start = start;
+      this.end = end;
+      this.currentPage = 1;
+      this.fetchData(1);
+    },
+    
+    clearDateFilter() {
+      this.start = null;
+      this.end = null;
+      this.currentPage = 1;
+      this.fetchData(1);
     }
   }
 });
