@@ -1,27 +1,16 @@
 <template>
-    <div class="layout">
+  <div class="layout">
+    <main>
+      <NuxtPage />
+    </main>
+  </div>
+</template>
 
-      <main>
-        <!-- This is where the page content will be injected -->
-        <NuxtPage />
-      </main>
+<script setup></script>
 
-    </div>
-  </template>
-  
-  <script setup>
-  </script>
-  
-  <style scoped>
-  /* Add any styles here if necessary */
-
-  main {
-    padding: 1rem;
-  }
-  .layout{
-    background-color: rgba(53, 53, 53, 0.1);
-    height: 100vh;
-  }
-
-  </style>
-  
+<style scoped>
+.layout {
+  background-color: rgba(53, 53, 53, 0.1);
+  height: auto;
+}
+</style>
