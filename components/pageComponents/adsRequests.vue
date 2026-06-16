@@ -210,18 +210,20 @@
     </div>
 
     <!-- Pagination -->
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl" :class="[
+    <div class="flex flex-col md:flex-row items-center justify-between gap-3 p-3 md:p-4 rounded-2xl" :class="[
       isDarkMode ? 'bg-slate-800/50 border border-slate-700' : 'bg-white border border-gray-200 shadow-sm'
     ]">
-      <div class="text-sm" :class="isDarkMode ? 'text-slate-400' : 'text-gray-500'">
-        Showing {{ (store.currentPage - 1) * store.perPage + 1 }} to {{ Math.min(store.currentPage * store.perPage, store.totalCount) }} of {{ store.totalCount }} entries
+      <!-- Info -->
+      <div class="text-xs md:text-sm text-center md:text-left" :class="isDarkMode ? 'text-slate-400' : 'text-gray-500'">
+        Showing {{ (store.currentPage - 1) * store.perPage + 1 }} - {{ Math.min(store.currentPage * store.perPage, store.totalCount) }} of {{ store.totalCount }}
       </div>
       
-      <div class="flex items-center gap-3">
+      <!-- Controls -->
+      <div class="flex items-center gap-2">
         <button
           @click="previousPage"
           :disabled="store.currentPage === 1"
-          class="flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="p-2 rounded-xl transition disabled:opacity-50"
           :class="[
             store.currentPage === 1
               ? (isDarkMode ? 'bg-slate-700 text-slate-500' : 'bg-gray-100 text-gray-400')
@@ -231,40 +233,22 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="15 18 9 12 15 6"/>
           </svg>
-          <span>Previous</span>
         </button>
 
-        <div class="flex items-center gap-2">
-          <span class="text-sm" :class="isDarkMode ? 'text-slate-300' : 'text-gray-600'">Page</span>
-          <input
-            type="number"
-            v-model.number="inputPage"
-            @keyup.enter="goToPage"
-            :min="1"
-            :max="store.totalPages"
-            class="w-16 text-center py-1.5 rounded-lg border transition-all focus:ring-2 focus:outline-none"
-            :class="[
-              isDarkMode 
-                ? 'bg-slate-900 border-slate-600 text-white focus:ring-purple-500/50' 
-                : 'bg-gray-50 border-gray-200 text-gray-900 focus:ring-purple-500/30'
-            ]"
-          />
-          <span class="text-sm" :class="isDarkMode ? 'text-slate-300' : 'text-gray-600'">
-            of {{ store.totalPages }}
-          </span>
-        </div>
+        <span class="text-xs md:text-sm" :class="isDarkMode ? 'text-slate-300' : 'text-gray-600'">
+          {{ store.currentPage }} / {{ store.totalPages }}
+        </span>
 
         <button
           @click="nextPage"
           :disabled="store.currentPage === store.totalPages"
-          class="flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="p-2 rounded-xl transition disabled:opacity-50"
           :class="[
             store.currentPage === store.totalPages
               ? (isDarkMode ? 'bg-slate-700 text-slate-500' : 'bg-gray-100 text-gray-400')
               : (isDarkMode ? 'bg-slate-700 text-white hover:bg-slate-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200')
           ]"
         >
-          <span>Next</span>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="9 18 15 12 9 6"/>
           </svg>

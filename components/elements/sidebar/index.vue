@@ -16,13 +16,25 @@
       <div class="mobile-placeholder"></div>
     </div>
 
+    <!-- Overlay for click outside -->
+    <div 
+      class="sidebar__overlay" 
+      v-if="isMobileOpen" 
+      @click="closeMobileSidebar"
+      @touchstart="closeMobileSidebar"
+    ></div>
+
     <!-- Sidebar -->
-    <div class="sidebar" :class="{ 
-      'sidebar--collapsed': !isOpen, 
-      'sidebar--mobile-open': isMobileOpen,
-      'dark': isDarkMode, 
-      'light': !isDarkMode 
-    }">
+    <div 
+      class="sidebar" 
+      :class="{ 
+        'sidebar--collapsed': !isOpen, 
+        'sidebar--mobile-open': isMobileOpen,
+        'dark': isDarkMode, 
+        'light': !isDarkMode 
+      }"
+      ref="sidebarRef"
+    >
       
       <!-- Toggle Button (Desktop only) -->
       <button class="sidebar__toggle" @click="toggleSidebar" title="Toggle Sidebar">
@@ -31,9 +43,6 @@
           <path d="M13 5L20 12L13 19" v-else/>
         </svg>
       </button>
-
-      <!-- Mobile Overlay -->
-      <div class="sidebar__overlay" v-if="isMobileOpen" @click="closeMobileSidebar"></div>
 
       <!-- Logo Area -->
       <div class="sidebar__logo" :class="{ 'sidebar__logo--hidden': !isOpen }">
@@ -102,10 +111,11 @@
         </button>
       </div>
     </div>
+  
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount, onUpdated, nextTick } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useAdminStore } from '~/stores/login';
 
@@ -116,11 +126,11 @@ const isMobile = ref(false);
 const router = useRouter();
 const route = useRoute();
 const adminStore = useAdminStore();
+const sidebarRef = ref(null);
 
 const menuItems = [
   { title: 'Clicks', path: '/dashboard/clicks', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>' },
   { title: 'Mobiles', path: '/dashboard/mobile', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>' },
-  { title: 'Ads', path: '/dashboard/ads', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>' },
   { title: 'Campaigns', path: '/dashboard/campaign', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>' },
   { title: 'Ads Requests', path: '/dashboard/ads', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>' },
   { title: 'Users', path: '/dashboard/users', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' }
@@ -131,7 +141,7 @@ const checkMobile = () => {
   if (process.client) {
     isMobile.value = window.innerWidth < 768;
     if (!isMobile.value) {
-      isMobileOpen.value = false;
+      closeMobileSidebar();
     }
   }
 };
@@ -222,6 +232,30 @@ const handleResize = () => {
   }
 };
 
+// Handle click outside on mobile
+const handleClickOutside = (event) => {
+  if (isMobile.value && isMobileOpen.value) {
+    const sidebar = sidebarRef.value;
+    const overlay = document.querySelector('.sidebar__overlay');
+    
+    // Close if click is outside sidebar and not on hamburger button
+    if (sidebar && !sidebar.contains(event.target)) {
+      // Check if click is on hamburger button (to prevent closing when clicking the button)
+      const hamburgerBtn = document.querySelector('.mobile-menu-btn');
+      if (hamburgerBtn && !hamburgerBtn.contains(event.target)) {
+        closeMobileSidebar();
+      }
+    }
+  }
+};
+
+// Handle escape key
+const handleEscapeKey = (event) => {
+  if (event.key === 'Escape' && isMobileOpen.value) {
+    closeMobileSidebar();
+  }
+};
+
 onMounted(() => {
   loadTheme();
   loadSidebarState();
@@ -229,6 +263,8 @@ onMounted(() => {
   
   if (process.client) {
     window.addEventListener('resize', handleResize);
+    document.addEventListener('click', handleClickOutside);
+    document.addEventListener('keydown', handleEscapeKey);
     
     const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleSystemThemeChange = (e) => {
@@ -244,6 +280,8 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (process.client) {
     window.removeEventListener('resize', handleResize);
+    document.removeEventListener('click', handleClickOutside);
+    document.removeEventListener('keydown', handleEscapeKey);
     document.body.style.overflow = '';
   }
 });
@@ -264,6 +302,7 @@ onBeforeUnmount(() => {
   z-index: 999;
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border-color);
+  background: var(--bg-primary);
   
   .mobile-menu-btn {
     width: 40px;
@@ -296,6 +335,28 @@ onBeforeUnmount(() => {
   
   .mobile-placeholder {
     width: 40px;
+  }
+}
+
+// Sidebar Overlay
+.sidebar__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  animation: fadeIn 0.3s ease;
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 }
 
@@ -366,17 +427,6 @@ onBeforeUnmount(() => {
       background: var(--bg-hover);
       transform: rotate(90deg);
     }
-  }
-  
-  &__overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    z-index: -1;
   }
   
   &__logo {
@@ -584,8 +634,7 @@ onBeforeUnmount(() => {
     display: none;
   }
   
-  .sidebar__mobile-close,
-  .sidebar__overlay {
+  .sidebar__mobile-close {
     display: none;
   }
 }
