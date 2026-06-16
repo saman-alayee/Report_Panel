@@ -12,5 +12,6 @@
 .layout {
   background-color: rgba(53, 53, 53, 0.1);
   height: auto;
+  padding: 20px;
 }
 </style>

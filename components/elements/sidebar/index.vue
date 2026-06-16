@@ -16,16 +16,9 @@
       <div class="mobile-placeholder"></div>
     </div>
 
-    <!-- Overlay for click outside -->
-    <div 
-      class="sidebar__overlay" 
-      v-if="isMobileOpen" 
-      @click="closeMobileSidebar"
-      @touchstart="closeMobileSidebar"
-    ></div>
-
     <!-- Sidebar -->
     <div 
+      ref="sidebarRef"
       class="sidebar" 
       :class="{ 
         'sidebar--collapsed': !isOpen, 
@@ -33,7 +26,6 @@
         'dark': isDarkMode, 
         'light': !isDarkMode 
       }"
-      ref="sidebarRef"
     >
       
       <!-- Toggle Button (Desktop only) -->
@@ -43,6 +35,9 @@
           <path d="M13 5L20 12L13 19" v-else/>
         </svg>
       </button>
+
+      <!-- Mobile Overlay -->
+      <div class="sidebar__overlay" v-if="isMobileOpen" @click="closeMobileSidebar"></div>
 
       <!-- Logo Area -->
       <div class="sidebar__logo" :class="{ 'sidebar__logo--hidden': !isOpen }">
@@ -111,11 +106,10 @@
         </button>
       </div>
     </div>
-  
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount, onUpdated, nextTick } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useAdminStore } from '~/stores/login';
 
@@ -123,10 +117,10 @@ const isOpen = ref(true);
 const isDarkMode = ref(true);
 const isMobileOpen = ref(false);
 const isMobile = ref(false);
+const sidebarRef = ref(null);
 const router = useRouter();
 const route = useRoute();
 const adminStore = useAdminStore();
-const sidebarRef = ref(null);
 
 const menuItems = [
   { title: 'Clicks', path: '/dashboard/clicks', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>' },
@@ -141,7 +135,8 @@ const checkMobile = () => {
   if (process.client) {
     isMobile.value = window.innerWidth < 768;
     if (!isMobile.value) {
-      closeMobileSidebar();
+      isMobileOpen.value = false;
+      document.body.style.overflow = '';
     }
   }
 };
@@ -171,6 +166,20 @@ const navigate = (path) => {
   router.push(path);
   if (isMobile.value) {
     closeMobileSidebar();
+  }
+};
+
+// Handle click outside the sidebar
+const handleClickOutside = (event) => {
+  if (isMobile.value && isMobileOpen.value) {
+    const sidebar = sidebarRef.value;
+    const hamburgerBtn = document.querySelector('.mobile-menu-btn');
+    
+    // Check if click is outside sidebar and not on hamburger button
+    if (sidebar && !sidebar.contains(event.target) && 
+        hamburgerBtn && !hamburgerBtn.contains(event.target)) {
+      closeMobileSidebar();
+    }
   }
 };
 
@@ -232,24 +241,7 @@ const handleResize = () => {
   }
 };
 
-// Handle click outside on mobile
-const handleClickOutside = (event) => {
-  if (isMobile.value && isMobileOpen.value) {
-    const sidebar = sidebarRef.value;
-    const overlay = document.querySelector('.sidebar__overlay');
-    
-    // Close if click is outside sidebar and not on hamburger button
-    if (sidebar && !sidebar.contains(event.target)) {
-      // Check if click is on hamburger button (to prevent closing when clicking the button)
-      const hamburgerBtn = document.querySelector('.mobile-menu-btn');
-      if (hamburgerBtn && !hamburgerBtn.contains(event.target)) {
-        closeMobileSidebar();
-      }
-    }
-  }
-};
-
-// Handle escape key
+// Handle escape key to close sidebar
 const handleEscapeKey = (event) => {
   if (event.key === 'Escape' && isMobileOpen.value) {
     closeMobileSidebar();
@@ -302,7 +294,6 @@ onBeforeUnmount(() => {
   z-index: 999;
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border-color);
-  background: var(--bg-primary);
   
   .mobile-menu-btn {
     width: 40px;
@@ -335,28 +326,6 @@ onBeforeUnmount(() => {
   
   .mobile-placeholder {
     width: 40px;
-  }
-}
-
-// Sidebar Overlay
-.sidebar__overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  z-index: 999;
-  animation: fadeIn 0.3s ease;
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
   }
 }
 
@@ -427,6 +396,17 @@ onBeforeUnmount(() => {
       background: var(--bg-hover);
       transform: rotate(90deg);
     }
+  }
+  
+  &__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: -1;
   }
   
   &__logo {
@@ -634,7 +614,8 @@ onBeforeUnmount(() => {
     display: none;
   }
   
-  .sidebar__mobile-close {
+  .sidebar__mobile-close,
+  .sidebar__overlay {
     display: none;
   }
 }
